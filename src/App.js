@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
+import Particles from 'react-particles-js';
+import Clarifai from 'clarifai';
 import Navigation from './components/Navigation/Navigation';
+import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Logo from './components/Logo/Logo';
 import Rank from './components/Rank/Rank';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
-import Particles from 'react-particles-js';
 import './App.css';
+
+const app = new Clarifai.App({
+ apiKey: 'fc16ca1e302346cca30025bc03991d4f'
+});
 
 const particlesOptions = {
   "particles": {
@@ -36,15 +42,28 @@ class App extends Component {
     super();
     this.state = {
       input: '',
+      imageUrl: ''
     }
   }
 
   onInputChange = (event) => {
-    console.log(event.target.value);
+    this.setState({input: event.target.value});
   }
 
   onButtonSubmit = () => {
-    console.log('click')
+    this.setState({imageUrl: this.state.input})
+    app.models
+      .predict(
+        Clarifai.COLOR_MODEL,
+        "https://samples.clarifai.com/face-det.jpg")
+      .then(
+      function(response) {
+        console.log(response);
+      },
+      function(err) {
+        // there was an error
+      }
+  );
   }
 
   render() {
@@ -60,7 +79,7 @@ class App extends Component {
           onInputChange={this.onInputChange}
           onButtonSubmit={this.onButtonSubmit}
         />
-        {/*<FaceRecognition />*/}
+        <FaceRecognition imageUrl={this.state.imageUrl}/>
       </div>
     );
   }
