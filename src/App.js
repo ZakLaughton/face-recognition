@@ -55,7 +55,7 @@ class App extends Component {
     app.models
       .predict(
         Clarifai.COLOR_MODEL,
-        "https://samples.clarifai.com/face-det.jpg")
+        this.state.input)
       .then(
       function(response) {
         console.log(response);
